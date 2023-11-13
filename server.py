@@ -4,11 +4,6 @@ from aiohttp import web
 WS_FILE = os.path.join(os.path.dirname(__file__), "websocket.html")
 
 
-async def on_shutdown(app):
-    for ws in app["sockets"]:
-        await ws.close()
-
-
 async def wshandler(request: web.Request):
     resp = web.WebSocketResponse()
     available = resp.can_prepare(request)
@@ -49,8 +44,8 @@ async def on_shutdown(app: web.Application):
 def init():
     app = web.Application()
     app["sockets"] = []
-    app.router.add_get("/", wshandler)  # wshandler опишем позже
-    app.on_shutdown.append(on_shutdown)  # on_shutdown опишем позже
+    app.router.add_get("/", wshandler)
+    app.on_shutdown.append(on_shutdown)
     return app
 
 
